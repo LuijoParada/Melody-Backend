@@ -19,15 +19,9 @@ class AuthController extends Controller
      */
     public function createUser(Request $request)
     {
-        //si el request no viene con los datos requeridos se retorna un error
-        // if(!$request->has('name') || !$request->has('email') || !$request->has('password')){
-        //     return response()->json([
-        //         'status' => false,
-        //         'message' => 'All fields are required'
-        //     ], 401);
-        // }
+
         try {
-            //Validated
+            //Aqui se valida que los campos requeridos no esten vacios
             $validateUser = Validator::make($request->all(), 
             [
                 'name' => 'required',
@@ -38,22 +32,30 @@ class AuthController extends Controller
             if($validateUser->fails()){
                 return response()->json([
                     'status' => false,
-                    'message' => 'validation error',
+                    'message' => 'Llene los campos requeridos correctamente',
                     'errors' => $validateUser->errors()
                 ], 401);
             }
 
+            //Aqui se crea el usuario y se encripta la contraseña
              $user = User::create([
                  'name' => $request->name,
                  'email' => $request->email,
                  'password' => Hash::make($request->password)
              ]);
-
+            //Aqui se retorna un mensaje de exito y se crea el token de autenticacion
+            //EL token asignara el rol de usuario a la persona que se registre 
             return response()->json([
                 'status' => true,
-                'message' => 'User Created Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'message' => 'Usuario creado exitosamente',
+                'token' => $user->createToken("API TOKEN", ['user'])->plainTextToken
             ], 200);
+                    
+            // return response()->json([
+            //     'status' => true,
+            //     'message' => 'User Created Successfully',
+            //     'token' => $user->createToken("API TOKEN")->plainTextToken
+            // ], 200);
 
         } catch (\Throwable $th) {
             return response()->json([
