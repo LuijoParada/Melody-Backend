@@ -5,7 +5,7 @@ from basic_pitch.inference import predict_and_save
 import librosa
 import mido
 import math
-
+print(os.getcwd()+" ")
 def process_audio(input_path, output_path):
     print(f"Processing file: {input_path}")
     
@@ -97,15 +97,24 @@ def convert_to_monophonic(midi_path, min_duration=60, fixed_velocity=128):
             delta_time = int(round((relative_start - last_end_time) * mid.ticks_per_beat))
             new_track.append(mido.Message('note_on', note=note, velocity=fixed_velocity, time=delta_time))
             new_track.append(mido.Message('note_off', note=note, velocity=fixed_velocity, time=int(round(duration * mid.ticks_per_beat))))
-            
+
             last_end_time = relative_start + duration
 
     # Save the new MIDI file
     new_mid.save(midi_path)
 
 # Define input and output directories
-input_dir = "input"
-output_dir = "output"
+#
+# Mauricio para bola a esto, hay que estar pendiente del directorio de trabajo
+#
+#quiero que el input sea la carpeta de storage/app/temp/input de laravel
+#input_dir = "..\\..\\..\\storage\\app\\temp\\input"
+input_dir = "C:\\xampp\\htdocs\\aplicacion web\\Melody\\storage\\app\\temp\\input"
+print(input_dir)
+#quiero que el output vaya a la carpeta de storage/app/temp/output de laravel
+#output_dir = "..\\..\\..\\storage\\app\\temp\\output"
+output_dir = "C:\\xampp\\htdocs\\aplicacion web\\Melody\\storage\\app\\temp\\output"
+
 
 # Create output directory if it doesn't exist
 if not os.path.exists(output_dir):

@@ -1,58 +1,111 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\Controller;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class AudioController extends Controller
+
+class ConvertionController extends Controller
 {
+    public function test()
+    {   
+        // Ruta absoluta al script de Python
+        $scriptPath = base_path('app/Scripts/AudioToMidi/convert2.py');
+        
+        // Verificar si el archivo existe
+        if (file_exists($scriptPath)) {
+            response()->json([
+                'message' => 'El archivo existe en la ruta especificada.',
+                'path' => $scriptPath
+            ], 200);
+        }
+        
+    // Ejecutar el script con la ruta absoluta y capturar salida y errores
+    $output = shell_exec("python  \"$scriptPath\" 2>&1");
+    if ($output !== null) {
+        return response()->json([
+            'message' => 'Hubo un error al ejecutar el script.',
+            'error' => $output
+        ], 500);
+    }
+
+    // retornar el archivo midi generado junto con un mensaje de éxito
+
+    return response()->json([
+        'message' => 'El archivo midi fue generado con éxito.',
+        'path' => 'storage/app/public/temp/audio.mid'
+    ], 200);
+    }
+
     public function convertAudioToMidi(Request $request)
     {
-        // Validar que se ha subido un archivo de audio
-        $request->validate([
-            'audio_file' => 'required|mimes:mp3,wav,ogg,flac|max:20480', // Máximo 20MB
-        ]);
-
-        // Guardar el archivo en la carpeta 'input' para procesarlo
-        $audioFile = $request->file('audio_file');
-        $inputPath = storage_path('app/input/' . $audioFile->getClientOriginalName());
-        $audioFile->move(storage_path('app/input'), $audioFile->getClientOriginalName());
-
-        // Definir el path para la salida
-        $outputPath = storage_path('app/output/' . pathinfo($audioFile->getClientOriginalName(), PATHINFO_FILENAME) . '.midi');
-
-        // Comando para ejecutar el script de Python
-        $process = new Process(['python', base_path('app/Scripts/AudioToMidi/tu_script.py'), $inputPath, $outputPath]);
-        $process->run();
-
-        // Verificar si el proceso ha fallado
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
+        //borrar archivos temporales
+        $inputPath = storage_path('app/temp/input');
+        $outputPath = storage_path('app/temp/output');
+        // Borrar archivos temporales
+        array_map('unlink', glob("$inputPath/*"));
+        array_map('unlink', glob("$outputPath/*"));
+        
+        // Validar que el archivo de audio vino en la petición y que es un archivo de audio sino devolver un error
+        if (!$request->hasFile('audiofile') || !$request->file('audiofile')->isValid()) {
+            return response()-> json([
+                'message' => 'Revisa el formato del archivo de audio.',
+                'error' => '400'
+            ], 400);
         }
+        // Crear un nombre único para el archivo de audio y guardarlo en la carpeta storage/app/temp/input
+        $audio = $request->file('audiofile');
+        $audioName = uniqid('audio_') . '.' . $audio->extension();
+        $audio->storeAs('temp/input', $audioName);
 
-        // Retornar la respuesta si el proceso es exitoso y descargar el archivo generado
-        return response()->download($outputPath)->deleteFileAfterSend(true);
-        //esto hara que el archivo se elimine despues de ser descargado
-        //download es un metodo de laravel que permite descargar un archivo una vez que recibe la respuesta
-    }
-    //funcion para guardar el archivo de partitura en la carpeta publica en una carpeta llamada partituras
-    public function saveSheetMusic(Request $request)
-    {
-        // Validar que se ha subido un archivo de partitura
-        $request->validate([
-            'sheet_music' => 'required|mimes:pdf|max:2048', // Máximo 2MB
-        ]);
+        // Ruta absoluta al script de Python
+        $scriptPath = base_path('app/Scripts/AudioToMidi/convert2.py');
+        
+        // Verificar si el archivo existe
+        if (file_exists($scriptPath)) {
+            response()->json([
+                'message' => 'El archivo existe en la ruta especificada.',
+                'path' => $scriptPath
+            ], 200);
+        }
+        // Ejecutar el script con la ruta absoluta y capturar salida y errores
+        $output = shell_exec("python  \"$scriptPath\" 2>&1");
+        
+        // Nombre del archivo MIDI convertido
+        $midiName = pathinfo($audioName, PATHINFO_FILENAME) . '_basic_pitch.mid';
 
-        // Guardar el archivo en la carpeta 'partituras'
-        $sheetMusic = $request->file('sheet_music');
-        $sheetMusic->move(public_path('partituras'), $sheetMusic->getClientOriginalName());
+        // Confirmar que el archivo convertido existe en la carpeta de salida
+        $outputPath = storage_path("\\app\\temp\\output\\{$midiName}");
 
-        // Retornar la respuesta con el path del archivo guardado
+        //confirmar que el archivo convertido existe y mandar mensaje de éxito
+    // Confirmar que el archivo convertido exista
+    if($output === null) {//si el output es null significa que hubo un error
         return response()->json([
-            'message' => 'Partitura guardada correctamente',
-            'path' => asset('partituras/' . $sheetMusic->getClientOriginalName())
-        ]);
+            'message' => 'Hubo un error al ejecutar el script.',
+            'error' => $output
+        ], 500);
+    }
+    if (!file_exists($outputPath)) {
+        return response()->json([
+            'scan' => scandir(storage_path('app/public/temp/output')),
+            'message' => 'no se encontró el archivo MIDI convertido.',
+            'midiName' => $midiName,
+            'outputPath' => $outputPath,
+            'error' => $output
+        ], 500);
+    }
+
+    // Retornar el archivo MIDI generado
+    // return response()->json([
+    //     'message' => 'El archivo MIDI fue generado con éxito.',
+    //     'name' => $midiName,
+    //     'url' => url("storage/app/temp/output/{$midiName}"),
+    // ], 200)->download(storage_path("app/temp/output/{$midiName}"));
+    return Response::download($outputPath, $midiName);
     }
 }

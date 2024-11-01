@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ConvertionController;
 use App\Models\User;
 
 // Rutas públicas (registro y login)
@@ -25,7 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Ruta para convertir un archivo de audio a midi
-Route::post('/audio/convert', [AudioController::class, 'convertAudioToMidi']);
+Route::post('/audio/convert', [ConvertionController::class, 'convertAudioToMidi']);
 
 // Ruta para guardar un archivo de partitura
-Route::post('/audio/save', [AudioController::class, 'saveSheetMusic']);
+Route::post('/audio/save', [ConvertionController::class, 'saveSheetMusic']);
+
+// Ruta de prueba para provar el script de python no se si deberia ser post o get
+Route::get('/audio/test', [ConvertionController::class, 'test']);
