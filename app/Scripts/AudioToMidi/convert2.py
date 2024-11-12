@@ -36,7 +36,7 @@ def process_audio(input_path, output_path):
             multiple_pitch_bends=False,
         )
         # Rename the output file to match the desired output path with the _basic_pitch suffix
-        default_output = os.path.join(os.path.dirname(output_path), os.path.basename(input_path).rsplit('.', 1)[0] + '_basic_pitch.midi')
+        default_output = os.path.join(os.path.dirname(output_path), os.path.basename(input_path).rsplit('.', 1)[0] + '_basic_pitch.mid')
         if os.path.exists(default_output):
             os.rename(default_output, output_path)
 
@@ -70,11 +70,9 @@ def midi_to_pdf(midi_path, pdf_path, chosen_clef='treble'):
     midi_stream.write('lily.pdf', fp=pdf_path)
 
 # Define input, output MIDI and output PDF directories
-input_dir = "C:\\xampp\\htdocs\\aplicacion-web\\Melody\\storage\\app\\temp\\input"
-output_midi_dir = "C:\\xampp\\htdocs\\aplicacion-web\\Melody\\storage\\app\\temp\\output"
-output_pdf_dir = "C:\\xampp\\htdocs\\aplicacion-web\\Melody\\storage\\app\\temp\\output-pdf"
-
-
+input_dir = "C:\\aplicacion-web\\Melody\\public\\temp\\input"
+output_midi_dir = "C:\\aplicacion-web\\Melody\\public\\temp\\output"
+output_pdf_dir = "C:\\aplicacion-web\\Melody\\public\\temp\\output-pdf"
 
 # Create output directories if they don't exist
 for directory in [output_midi_dir, output_pdf_dir]:
@@ -85,14 +83,14 @@ for directory in [output_midi_dir, output_pdf_dir]:
 for filename in os.listdir(input_dir):
     if filename.endswith((".wav", ".mp3", ".ogg", ".flac")):
         input_path = os.path.join(input_dir, filename)
-        output_midi_path = os.path.join(output_midi_dir, os.path.splitext(filename)[0] + "_basic_pitch.midi")
+        output_midi_path = os.path.join(output_midi_dir, os.path.splitext(filename)[0] + "_basic_pitch.mid")
         output_pdf_path = os.path.join(output_pdf_dir, os.path.splitext(filename)[0])
 
         print(f"\nProcessing {filename}...")
         # Process audio and create MIDI
         process_audio(input_path, output_midi_path)
         # Convert MIDI to PDF
-        print(f"\nPDFing {filename}...")
-        midi_to_pdf(output_midi_path[:-1], output_pdf_path, chosen_clef='bass')
+        print(f"\nConverting to pdf: {filename}...")
+        midi_to_pdf(output_midi_path, output_pdf_path, chosen_clef='bass')
 
 print("\nAll conversions completed.")
