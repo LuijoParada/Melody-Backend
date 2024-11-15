@@ -12,7 +12,7 @@ color = #(define-music-function (parser location color) (string?) #{
  
 \score  { 
  
-      << \new Staff  = yyccefdbdybcw { \clef "bass" 
+      << \new Staff  = xafwcdazfzedy { \clef "bass" 
              \time 4/4
              r 1  
              \clef "bass" 

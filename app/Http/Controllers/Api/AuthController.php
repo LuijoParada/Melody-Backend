@@ -11,8 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
 class AuthController extends Controller
-{
-        /**
+{    /**
      * Create User
      * @param Request $request
      * @return User 
