@@ -11,22 +11,9 @@ color = #(define-music-function (parser location color) (string?) #{
   } 
  
 \score  { 
+ \new Voice {  } 
+         
  
-      << \new Staff  = yyccefdbdybcw { \clef "bass" 
-             \time 4/4
-             r 1  
-             \clef "bass" 
-             \time 4/4
-             \bar "|"  %{ end measure 1 %} 
-             r 2  
-             b,, 4  
-             r 2  
-             \bar "|."  %{ end measure 2 %} 
-              } 
-            
- 
-        >>
-      
   } 
  
 \paper { }
