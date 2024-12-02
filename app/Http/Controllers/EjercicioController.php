@@ -7,13 +7,23 @@ use App\Models\Ejercicio;
 
 class EjercicioController extends Controller
 {
-    public function show($nivel, $ejercicio)
+    public function show($tipo, $nivel)
     {
-        $ejercicio = Ejercicio::where('nivel', $nivel)->find($ejercicio);
-        if ($ejercicio) {
-            return response()->json($ejercicio);
+        // Ajustar el nivel según el tipo de ejercicio
+        if ($tipo === 'ritmico') {
+            $nivelReal = $nivel + 5;
+        } elseif ($tipo === 'melodico') {
+            $nivelReal = $nivel + 10;
         } else {
-            return response()->json(['error' => 'Ejercicio no encontrado'], 404);
+            $nivelReal = $nivel;
+        }
+
+        // Encontrar los ejercicios del nivel ajustado
+        $ejercicios = Ejercicio::where('nivel', $nivelReal)->get();
+        if ($ejercicios->isEmpty()) {
+            return response()->json(['error' => 'Ejercicios no encontrados'], 404);
+        } else {
+            return response()->json($ejercicios);
         }
     }
 }

@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\ConvertionController;
 use App\Models\User;
 use App\Http\Controllers\EjercicioController;
 
-Route::get('/ejercicio/{nivel}/{ejercicio}', [EjercicioController::class, 'show']);
+Route::get('/ejercicio/{tipo}/{nivel}', [EjercicioController::class, 'show']);
 
 
 // Rutas públicas (registro y login)
