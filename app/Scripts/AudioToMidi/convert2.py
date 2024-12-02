@@ -32,7 +32,7 @@ def process_audio(input_path, output_path):
             midi_tempo=160,
             model_or_model_path=ICASSP_2022_MODEL_PATH,
             minimum_frequency=60,
-            maximum_frequency=120,
+            maximum_frequency=300,
             multiple_pitch_bends=False,
         )
         # Rename the output file to match the desired output path with the _basic_pitch suffix

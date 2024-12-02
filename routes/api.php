@@ -9,20 +9,12 @@ use App\Models\User;
 // Rutas públicas (registro y login)
 Route::post('/auth/register', [AuthController::class, 'createUser']);
 Route::post('/auth/login', [AuthController::class, 'loginUser']);
-// crear una ruta que redirija si no hay una ruta que coincida
-Route::fallback(function(){return response()->json([
-        'message' => 'Page Not Found.',
-        'error' => '404'
-    ]);
-});
+//estas rutas deberian estar protegidas por el middleware de autenticacion
+Route::get('/user', [AuthController::class, 'getUser']);
 
-// Rutas protegidas (requieren autenticación)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-
-    Route::post('/auth/logout', [AuthController::class, 'logoutUser']);  // Ruta para logout protegida
+   // Route::get('/user', [AuthController::class, 'getUser']); // Obtener usuario autenticado
+    Route::post('/auth/logout', [AuthController::class, 'logoutUser']); // Logout
 });
 
 // Ruta para convertir un archivo de audio a midi
@@ -33,3 +25,11 @@ Route::post('/audio/save', [ConvertionController::class, 'saveSheetMusic']);
 
 // Ruta de prueba para provar el script de python no se si deberia ser post o get
 Route::get('/audio/test', [ConvertionController::class, 'test']);
+
+
+// crear una ruta que redirija si no hay una ruta que coincida
+Route::fallback(function(){return response()->json([
+    'message' => 'Page Not Found.',
+    'error' => '404'
+]);
+});

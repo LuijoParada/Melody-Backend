@@ -97,10 +97,48 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
+                'user' => $user,
                 'message' => 'User Logged In Successfully',
                 'token' => $user->createToken("API TOKEN")->plainTextToken
             ], 200);
 
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    //Logout the user
+    public function logoutUser(Request $request)
+    {
+        $user = $request->user(); // Obtiene el usuario autenticado automáticamente
+        if ($user) {
+            // Revoke all tokens del usuario autenticado
+            $user->tokens()->delete();
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+        // Opcional: invalida sesión
+        $request->session()->invalidate();
+        // Responde con éxito
+        return response()->json(['message' => 'Logout successful'], 200);
+    }
+    
+    //Get the user
+    public function getUser(Request $request)
+    {
+        try {
+            return response()->json([
+                'status' => true,
+                'message' => 'User Data',
+                'data' => $request->user()
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
