@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConvertionController;
 use App\Models\User;
+use App\Http\Controllers\EjercicioController;
+
+Route::get('/ejercicio/{tipo}/{nivel}', [EjercicioController::class, 'show']);
+
 
 // Rutas públicas (registro y login)
 Route::post('/auth/register', [AuthController::class, 'createUser']);
