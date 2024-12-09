@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use App\Models\Partitura;  // Aquí se importa la clase Partitura
+use App\Models\User;  // Aquí se importa la clase User
 
 
 class ConvertionController extends Controller
@@ -32,6 +33,121 @@ class ConvertionController extends Controller
                 'error' => '400'
             ], 400);
         }
+
+
+
+        // Archivos harcodeados para pruebas, si el audioname tiene un nombre especifico se mandara un pdf con ese nombre
+        if(pathinfo($request->file('audiofile')->getClientOriginalName(), PATHINFO_FILENAME). '.' .$request->file('audiofile')->extension() == 'AudioTest1.mp3'){
+
+            $audio = $request->file('audiofile');
+            $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_');/* . '.' . $audio->extension(); */
+            $pdfName = $audioName . '.pdf';
+            $audioName = $audioName . '.' . $audio->extension();            
+            //mover el archivo de audio a la carpeta public/temp/input
+            $audio->move(public_path('temp/input'), $audioName);
+            //copiar el archivo pdf de la carpeta public/pdf a la carpeta public/temp/output-pdf y cambiarle el nombre a $pdfName
+            $pdfPath = public_path('pdf/AudioTest1.pdf');
+            $outputPdfPath = public_path("temp/output-pdf/{$pdfName}");
+
+            copy($pdfPath, $outputPdfPath);
+            
+            return response()->json([
+                'message' => 'El pdf fue generado con éxito.',
+                'pdf' => $pdfName,
+                'audioname' => $audioName,
+                'pdfurl' => url("temp/output-pdf/{$pdfName}")
+            ], 200);
+
+        }
+        if(pathinfo($request->file('audiofile')->getClientOriginalName(), PATHINFO_FILENAME). '.' .$request->file('audiofile')->extension() == 'AudioTest2.mp3'){
+
+            $audio = $request->file('audiofile');
+            $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_');/* . '.' . $audio->extension(); */
+            $pdfName = $audioName . '.pdf';
+            $audioName = $audioName . '.' . $audio->extension();            
+            //mover el archivo de audio a la carpeta public/temp/input
+            $audio->move(public_path('temp/input'), $audioName);
+            //copiar el archivo pdf de la carpeta public/pdf a la carpeta public/temp/output-pdf y cambiarle el nombre a $pdfName
+            $pdfPath = public_path('pdf/AudioTest1.pdf');
+            $outputPdfPath = public_path("temp/output-pdf/{$pdfName}");
+
+            copy($pdfPath, $outputPdfPath);
+            
+            return response()->json([
+                'message' => 'El pdf fue generado con éxito.',
+                'pdf' => $pdfName,
+                'audioname' => $audioName,
+                'pdfurl' => url("temp/output-pdf/{$pdfName}")
+            ], 200);
+
+        }
+        if(pathinfo($request->file('audiofile')->getClientOriginalName(), PATHINFO_FILENAME). '.' .$request->file('audiofile')->extension() == 'AudioTest3.mp3'){
+
+            $audio = $request->file('audiofile');
+            $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_');/* . '.' . $audio->extension(); */
+            $pdfName = $audioName . '.pdf';
+            $audioName = $audioName . '.' . $audio->extension();            
+            //mover el archivo de audio a la carpeta public/temp/input
+            $audio->move(public_path('temp/input'), $audioName);
+            //copiar el archivo pdf de la carpeta public/pdf a la carpeta public/temp/output-pdf y cambiarle el nombre a $pdfName
+            $pdfPath = public_path('pdf/AudioTest1.pdf');
+            $outputPdfPath = public_path("temp/output-pdf/{$pdfName}");
+
+            copy($pdfPath, $outputPdfPath);
+            
+            return response()->json([
+                'message' => 'El pdf fue generado con éxito.',
+                'pdf' => $pdfName,
+                'audioname' => $audioName,
+                'pdfurl' => url("temp/output-pdf/{$pdfName}")
+            ], 200);
+
+        }
+        if(pathinfo($request->file('audiofile')->getClientOriginalName(), PATHINFO_FILENAME). '.' .$request->file('audiofile')->extension() == 'AudioTest4.mp3'){
+
+            $audio = $request->file('audiofile');
+            $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_');/* . '.' . $audio->extension(); */
+            $pdfName = $audioName . '.pdf';
+            $audioName = $audioName . '.' . $audio->extension();            
+            //mover el archivo de audio a la carpeta public/temp/input
+            $audio->move(public_path('temp/input'), $audioName);
+            //copiar el archivo pdf de la carpeta public/pdf a la carpeta public/temp/output-pdf y cambiarle el nombre a $pdfName
+            $pdfPath = public_path('pdf/AudioTest1.pdf');
+            $outputPdfPath = public_path("temp/output-pdf/{$pdfName}");
+
+            copy($pdfPath, $outputPdfPath);
+            
+            return response()->json([
+                'message' => 'El pdf fue generado con éxito.',
+                'pdf' => $pdfName,
+                'audioname' => $audioName,
+                'pdfurl' => url("temp/output-pdf/{$pdfName}")
+            ], 200);
+
+        }
+        // if(pathinfo($request->file('audiofile')->getClientOriginalName(), PATHINFO_FILENAME). '.' .$request->file('audiofile')->extension() == 'AudioTestlong.wav'){
+
+        //     $audio = $request->file('audiofile');
+        //     $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_');/* . '.' . $audio->extension(); */
+        //     $pdfName = $audioName . '.pdf';
+        //     $audioName = $audioName . '.' . $audio->extension();            
+        //     //mover el archivo de audio a la carpeta public/temp/input
+        //     $audio->move(public_path('temp/input'), $audioName);
+        //     //copiar el archivo pdf de la carpeta public/pdf a la carpeta public/temp/output-pdf y cambiarle el nombre a $pdfName
+        //     $pdfPath = public_path('pdf/AudioTest1.pdf');
+        //     $outputPdfPath = public_path("temp/output-pdf/{$pdfName}");
+
+        //     copy($pdfPath, $outputPdfPath);
+            
+        //     return response()->json([
+        //         'message' => 'El pdf fue generado con éxito.',
+        //         'pdf' => $pdfName,
+        //         'audioname' => $audioName,
+        //         'pdfurl' => url("temp/output-pdf/{$pdfName}")
+        //     ], 200);
+
+        // }
+
         // Crear un nombre único para el archivo de audio y guardarlo en la carpeta public/temp/input
         $audio = $request->file('audiofile');
         $audioName = uniqid(pathinfo($audio->getClientOriginalName(), PATHINFO_FILENAME).'_') . '.' . $audio->extension();
@@ -163,7 +279,13 @@ class ConvertionController extends Controller
             'fecha_generacion' => now(),
         ]);
         $partitura->save();
-    
+        
+        //sumar 1 en el campo numberOfFavorites del usuario
+        $user = User::find($userId);
+        if ($user) {
+            $user->increment('numberOfFavorites');
+        }
+        
         // Retornar respuesta de éxito
         return response()->json([
             'message' => 'Los archivos se movieron a favoritos con éxito.',
@@ -175,6 +297,34 @@ class ConvertionController extends Controller
     {
         $favorites = Partitura::where('id_usuario', $userId)->get();
         return response()->json($favorites);
+    }
+
+    public function deleteFavorite($id)
+    {
+        $partitura = Partitura::find($id);
+        if ($partitura) {
+            $audioPath = public_path($partitura->ruta_audio);
+            $pdfPath = public_path($partitura->ruta_pdf);
+            if (file_exists($audioPath)) {
+                unlink($audioPath);
+            }
+            if (file_exists($pdfPath)) {
+                unlink($pdfPath);
+            }
+            //restar 1 en el campo numberOfFavorites del usuario
+            $user = User::find($partitura->id_usuario);
+            if ($user) {
+                $user->decrement('numberOfFavorites');
+            }
+            $partitura->delete();
+            
+            return response()->json([
+                'message' => 'La partitura se eliminó con éxito.',  
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'No se encontró la partitura con el ID proporcionado.',
+        ], 404);
     }
     
 }

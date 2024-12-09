@@ -17,6 +17,12 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->nullable(); // Añadido: campo para el rol
+            $table->string('numberOfFavorites')->nullable(); // Añadido: campo para el número de favoritos
+            $table->string('profile_photo_path')->nullable(); // Añadido: campo para la foto de perfil
+            $table->string('status')->nullable(); 
+            $table->string('country')->nullable(); // Añadido: campo para el país
+            $table->string('about')->nullable(); // Añadido: campo para la biografía
             $table->rememberToken();
             $table->timestamps();
         });
@@ -42,8 +48,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::disableForeignKeyConstraints(); // Deshabilitar claves foráneas
+        Schema::dropIfExists('sessions'); // Primero elimina las tablas dependientes
         Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('users'); // Luego elimina la tabla 'users'
+        Schema::enableForeignKeyConstraints(); // Habilitar claves foráneas nuevamente
     }
 };
