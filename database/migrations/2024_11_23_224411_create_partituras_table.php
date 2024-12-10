@@ -9,11 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('partituras', function (Blueprint $table) {
-            $table->id('id_partitura');
-            $table->foreignId('id_usuario')->constrained('users'); // Relación con users
-            $table->string('nombre_partitura');
-            $table->string('ruta_archivo');
-            $table->timestamp('fecha_generacion')->useCurrent();
+            $table->id();
+            $table->foreignId('id_usuario')->constrained('users'); // Relación con usuarios
+            $table->string('nombre_pdf')->nullable(); // Nombre del archivo PDF
+            $table->string('ruta_pdf')->nullable(); // Ruta del archivo PDF
+            $table->string('nombre_audio')->nullable(); // Nombre del archivo de audio
+            $table->string('ruta_audio')->nullable(); // Ruta del archivo de audio
+            $table->timestamp('fecha_generacion')->useCurrent(); // Fecha de generación
             $table->timestamps();
         });
     }
@@ -23,4 +25,3 @@ return new class extends Migration
         Schema::dropIfExists('partituras');
     }
 };
-
